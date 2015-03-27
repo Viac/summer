@@ -4,6 +4,10 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 
 public class GameActivity extends ActionBarActivity {
@@ -12,8 +16,23 @@ public class GameActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-    }
 
+        final TextView score = (TextView) this.findViewById(R.id.tvScore);
+
+        LinearLayout surface = (LinearLayout)findViewById(R.id.surface);
+        surface.addView(new GameSurfaceView(this));
+
+        surface.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_MOVE){
+                    score.setText("x=" + event.getX() + " y=" + event.getX());
+                    return true;
+                }
+                return true;
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
