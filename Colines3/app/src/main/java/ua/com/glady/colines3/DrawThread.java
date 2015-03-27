@@ -12,25 +12,15 @@ import android.view.SurfaceHolder;
  * Created by Slava on 27.03.2015.
  */
 class DrawThread extends Thread{
+
     private boolean runFlag = false;
     private SurfaceHolder surfaceHolder;
-    private Bitmap picture;
-    private Matrix matrix;
-    private long prevTime;
 
-    public DrawThread(SurfaceHolder surfaceHolder, Resources resources){
+    private GameModel game;
+
+    public DrawThread(SurfaceHolder surfaceHolder, Resources resources, GameModel game){
         this.surfaceHolder = surfaceHolder;
-
-        // загружаем картинку, которую будем отрисовывать
-        picture = BitmapFactory.decodeResource(resources, android.R.mipmap.sym_def_app_icon);
-
-        // формируем матрицу преобразований для картинки
-        matrix = new Matrix();
-        matrix.postScale(3.0f, 3.0f);
-        matrix.postTranslate(100.0f, 100.0f);
-
-        // сохраняем текущее время
-        prevTime = System.currentTimeMillis();
+        this.game = game;
     }
 
     public void setRunning(boolean run) {
@@ -41,29 +31,17 @@ class DrawThread extends Thread{
     public void run() {
         Canvas canvas;
         while (runFlag) {
-            // получаем текущее время и вычисляем разницу с предыдущим
-            // сохраненным моментом времени
-            long now = System.currentTimeMillis();
-            long elapsedTime = now - prevTime;
-            if (elapsedTime > 30){
-                // если прошло больше 30 миллисекунд - сохраним текущее время
-                // и повернем картинку на 2 градуса.
-                // точка вращения - центр картинки
-                prevTime = now;
-                matrix.preRotate(2.0f, picture.getWidth() / 2, picture.getHeight() / 2);
-            }
             canvas = null;
             try {
                 // получаем объект Canvas и выполняем отрисовку
                 canvas = surfaceHolder.lockCanvas(null);
                 synchronized (surfaceHolder) {
-                    canvas.drawColor(Color.BLACK);
-                    canvas.drawBitmap(picture, matrix, null);
+                    game.paint(canvas);
                 }
             }
             finally {
                 if (canvas != null) {
-                    // отрисовка выполнена. выводим результат на экран
+                    // Drawing complete, now show it on the screen
                     surfaceHolder.unlockCanvasAndPost(canvas);
                 }
             }

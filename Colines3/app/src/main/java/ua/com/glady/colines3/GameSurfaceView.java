@@ -11,8 +11,11 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
     private DrawThread drawThread;
 
-    public GameSurfaceView(Context context) {
+    private GameModel game;
+
+    public GameSurfaceView(Context context, GameModel game) {
         super(context);
+        this.game = game;
         getHolder().addCallback(this);
     }
 
@@ -23,7 +26,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        drawThread = new DrawThread(getHolder(), getResources());
+        drawThread = new DrawThread(getHolder(), getResources(), game);
         drawThread.setRunning(true);
         drawThread.start();
     }
@@ -31,14 +34,16 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         boolean retry = true;
-        // завершаем работу потока
+
+        // Finishing thread
         drawThread.setRunning(false);
         while (retry) {
             try {
                 drawThread.join();
                 retry = false;
             } catch (InterruptedException e) {
-                // если не получилось, то будем пытаться еще и еще
+                // if not success - will try more and more..
+                //todo: does it make sense?
             }
         }
     }

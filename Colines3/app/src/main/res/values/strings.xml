@@ -2,5 +2,6 @@
     <string name="app_name">Colines3</string>
 
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_run">V</string>
+    <string name="action_reset">X</string>
 </resources>
