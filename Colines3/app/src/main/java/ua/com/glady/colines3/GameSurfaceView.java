@@ -36,6 +36,9 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         boolean retry = true;
 
         // Finishing thread
+
+        // todo: check if this could drain battery
+
         drawThread.setRunning(false);
         while (retry) {
             try {

@@ -21,7 +21,7 @@ public class GameModel {
 
     private int[] item;
 
-    private final int WIDTH = 30;
+    private final int WIDTH = 20;
 
     public void setX(int x) {
         this.x = x;
@@ -33,7 +33,7 @@ public class GameModel {
 
     private int fixedItem = 0;
 
-    private int score = 1;
+    private int score = 0;
 
     public GameModel(){
         stack = new ArrayList<Integer>();
@@ -115,6 +115,12 @@ public class GameModel {
 
     public void paint(Canvas canvas){
 
+        // clear canvas
+        canvas.drawColor(Color.GRAY);
+
+        // also possible
+        // Canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+
         canvasWidth = canvas.getWidth();
 
         Paint paint = new Paint();
@@ -133,7 +139,9 @@ public class GameModel {
         int itemRightBound = xPaint + 3 * WIDTH;
 
         fixedItem = (canvasWidth - itemRightBound) / WIDTH;
-        Log.d("glady", "  itemRightBound=" + itemRightBound + " FixedItem:" + fixedItem);
+
+        // todo: slow operation?
+        // Log.d("glady", "  itemRightBound=" + itemRightBound + " FixedItem:" + fixedItem);
 
         if (fixedItem > stack.size())
             fixedItem = stack.size();

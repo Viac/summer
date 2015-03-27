@@ -20,13 +20,14 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
     TextView score;
     LinearLayout surface;
 
+    GameSurfaceView gameView;
+
     GameModel game;
 
     INotifyEvent onScoreUpdated = new INotifyEvent() {
         @Override
         public void onEvent() {
-            score.setText(game.getScore());
-            score.invalidate();
+            score.setText(String.valueOf(game.getScore()));
         }
     };
 
@@ -35,15 +36,20 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        score = (TextView) this.findViewById(R.id.tvScore);
+
         game = new GameModel();
         game.setOnScoreUpdated(onScoreUpdated);
-
-        score = (TextView) this.findViewById(R.id.tvScore);
 
         surface = (LinearLayout)findViewById(R.id.surface);
         surface.setOnTouchListener(this);
 
-        surface.addView(new GameSurfaceView(this, game));
+        gameView = new GameSurfaceView(this, game);
+
+        surface.addView(gameView);
+
+        // initial scores value
+        onScoreUpdated.onEvent();
     }
 
     @Override
@@ -98,7 +104,6 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
             case MotionEvent.ACTION_CANCEL:
                 break;
         }
-
         return true;
     }
 }
