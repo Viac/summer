@@ -2,6 +2,8 @@ package ua.com.glady.colines3;
 
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -31,6 +33,14 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
         }
     };
 
+
+    INotifyEvent onAnimationBegin = new INotifyEvent() {
+        @Override
+        public void onEvent() {
+            // SystemClock.sleep(3000);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +50,7 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
 
         game = new GameModel();
         game.setOnScoreUpdated(onScoreUpdated);
+        game.onAnimationBegin = this.onAnimationBegin;
 
         surface = (LinearLayout)findViewById(R.id.surface);
         surface.setOnTouchListener(this);

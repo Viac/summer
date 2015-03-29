@@ -3,10 +3,11 @@ package ua.com.glady.colines3;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import ua.com.glady.colines3.Tools.ValueAnimation;
 
 /**
  * Created by Slava on 15.02.2015.
@@ -35,10 +36,20 @@ public class GameModel {
 
     private int score = 0;
 
+    private boolean animateDrop;
+
+    ValueAnimation animation;
+
+    INotifyEvent onAnimationBegin;
+
+    INotifyEvent onAnimationEnd;
+
     public GameModel(){
         stack = new ArrayList<Integer>();
         item = new int[3];
         createNewItem();
+        animateDrop = false;
+        animation = new ValueAnimation();
     }
 
     public void reset(){
@@ -107,8 +118,47 @@ public class GameModel {
         cleanupStack();
     }
 
+
     public void drop(int x){
+        animateDrop = true;
+
+//        if (onAnimationBegin != null)
+//            onAnimationBegin.onEvent();
+
+
+        animation.animStartTime = System.currentTimeMillis();
+        animation.beginValue = x;
+
+        int stackLeft = canvasWidth - stack.size() * WIDTH;
+
+        if (x < (stackLeft - item.length * WIDTH)){
+            animation.endValue = canvasWidth - stack.size() * WIDTH - item.length * WIDTH;
+        } else
+        {
+            int itemRightBound = x + item.length * WIDTH;
+            // items that on the right of our current position
+            fixedItem = (canvasWidth - itemRightBound) / WIDTH;
+            animation.endValue = fixedItem * WIDTH - item.length * WIDTH;
+        }
+
+
+        animation.animDuration = (animation.endValue - animation.beginValue) / 2; // good speed
+        animation.animFinishTime = System.currentTimeMillis() + animation.animDuration; // time to fall
+
+        while ((System.currentTimeMillis() - animation.animStartTime) < animation.animDuration){
+            // do nothing, animation painted
+
+            // todo: security watcher!
+        }
+
+
         addItemToStack(x);
+        animateDrop = false;
+
+//        if (onAnimationBegin != null)
+//            onAnimationBegin.onEvent();
+
+
         createNewItem();
         this.x = 0;
     }
@@ -138,6 +188,7 @@ public class GameModel {
 
         int itemRightBound = xPaint + 3 * WIDTH;
 
+        // items that on the right of our current position
         fixedItem = (canvasWidth - itemRightBound) / WIDTH;
 
         // todo: slow operation?
@@ -146,16 +197,32 @@ public class GameModel {
         if (fixedItem > stack.size())
             fixedItem = stack.size();
 
+        // drawing items that on the right of our current position
         for (int i = 0; i < fixedItem; i++){
             paint.setColor(stack.get(i));
             canvas.drawRect(canvasWidth - (i + 1) * WIDTH, 80, canvasWidth - i * WIDTH, 1000, paint);
         }
 
-        for (int i = 0; i < item.length; i++){
-            paint.setColor(item[i]);
-            canvas.drawRect(xPaint + i * WIDTH, 80, xPaint + (i + 1) * WIDTH, 1000, paint);
+        // drawing 'active' item
+
+        if (this.animateDrop) {
+            float animationX = animation.getCurrentValue(System.currentTimeMillis() - animation.animStartTime);
+            for (int i = 0; i < item.length; i++){
+                paint.setColor(item[i]);
+                canvas.drawRect(animationX + i * WIDTH, 80, animationX + (i + 1) * WIDTH, 1000, paint);
+            }
+        }
+        else {
+            // normal drawing
+            for (int i = 0; i < item.length; i++){
+                paint.setColor(item[i]);
+                canvas.drawRect(xPaint + i * WIDTH, 80, xPaint + (i + 1) * WIDTH, 1000, paint);
+            }
+
         }
 
+
+        // drawing items that on the left of our current position
         int itemsToDraw = stack.size() - fixedItem;
         if (itemsToDraw > 0){
             for (int i = fixedItem; i < stack.size(); i++){
