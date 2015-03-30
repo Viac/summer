@@ -1,9 +1,5 @@
 package ua.com.glady.colines3;
 
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.os.Handler;
-import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,9 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
+import android.widget.Toast;
 
 
 public class GameActivity extends ActionBarActivity implements View.OnTouchListener {
@@ -33,11 +27,11 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
         }
     };
 
-
-    INotifyEvent onAnimationBegin = new INotifyEvent() {
+    INotifyEvent onGameOver = new INotifyEvent() {
         @Override
         public void onEvent() {
-            // SystemClock.sleep(3000);
+            Toast.makeText(getApplicationContext(), "Game over!!!!!", Toast.LENGTH_SHORT).show();
+            game.reset();
         }
     };
 
@@ -50,7 +44,7 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
 
         game = new GameModel();
         game.setOnScoreUpdated(onScoreUpdated);
-        game.onAnimationBegin = this.onAnimationBegin;
+        game.setOnGameOver(onGameOver);
 
         surface = (LinearLayout)findViewById(R.id.surface);
         surface.setOnTouchListener(this);
@@ -77,12 +71,6 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_run) {
-            run();
-            return true;
-        }
-
         if (id == R.id.action_reset) {
             reset();
             return true;
@@ -95,13 +83,9 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
         game.reset();
     }
 
-    private void run() {
-
-    }
-
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        int x = Math.round(event.getX());
+        int x = (int) event.getX();
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN: // нажатие
