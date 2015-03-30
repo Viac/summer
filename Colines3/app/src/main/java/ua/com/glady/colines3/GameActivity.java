@@ -45,6 +45,10 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
         game = new GameModel();
         game.setOnScoreUpdated(onScoreUpdated);
         game.setOnGameOver(onGameOver);
+        game.setGameMode(GameModel.GameMode.Game3x);
+
+        // todo: switch orientation!
+        game.reset();
 
         surface = (LinearLayout)findViewById(R.id.surface);
         surface.setOnTouchListener(this);

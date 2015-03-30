@@ -16,19 +16,44 @@ import ua.com.glady.colines3.Tools.AnimationTimer;
  */
 public class GameModel {
 
+    public void setGameMode(GameMode gameMode) {
+        this.gameMode = gameMode;
+    }
+
+    public enum GameMode {Game4x, Game3x, GamePattern};
+
+    private GameMode gameMode;
+
     private final int UNDEFINED = -1;
 
     private INotifyEvent onScoreUpdated;
 
     private INotifyEvent onGameOver;
 
-    private int[] colors = { Color.YELLOW, Color.BLUE, Color.GREEN };
+    private int[] colors = { Color.YELLOW, Color.BLUE, Color.GREEN, Color.RED };
+
+
+//    private int[] colors = {
+//            Color.argb(255, 228,  68,  36),
+//            Color.argb(255, 103, 188, 219),
+//            Color.argb(255, 162, 171,  88),
+//            Color.argb(255, 255, 255, 255)
+//    };
+
+
+//    private int[] colors = {
+//            Color.argb(255, 85,98,112),
+//            Color.argb(255, 78,205,196),
+//            Color.argb(255, 199,244,100),
+//            Color.argb(255, 255,107,107)
+//    };
+
 
     private ArrayList<Integer> stack;
 
     private int[] item;
 
-    private final int WIDTH = 20;
+    private int basicWidth;
 
     public void setX(int x) {
         this.x = x;
@@ -68,6 +93,16 @@ public class GameModel {
     public void reset(){
         stack.clear();
         score = 0;
+
+        if (gameMode == GameMode.Game4x){
+            item = new int[4];
+            basicWidth = 13;
+        }
+        else {
+            item = new int[3];
+            basicWidth = 20;
+        }
+
         createNewItem();
     }
 
@@ -95,6 +130,16 @@ public class GameModel {
         }
         item[2] = colors[index];
 
+        if (gameMode == GameMode.Game4x){
+            found = false;
+            while (! found){
+                index = r.nextInt(colors.length);
+                if (colors[index] != item[2])
+                    found = true;
+            }
+            item[3] = colors[index];
+        }
+
     }
 
     private int getIndexToRemove(){
@@ -113,7 +158,7 @@ public class GameModel {
             animateCleanUp = true;
 
             animation.setStartTime(System.currentTimeMillis());
-            animation.setStartValue(2*WIDTH);
+            animation.setStartValue(2* basicWidth);
             animation.setFinishValue(0);
             animation.setDuration(70);
 
@@ -133,13 +178,23 @@ public class GameModel {
 
     public void addItemToStack(){
         if (fixedItem >= stack.size()) {
+            if (gameMode == GameMode.Game4x)
+                stack.add(item[3]);
             stack.add(item[2]);
             stack.add(item[1]);
             stack.add(item[0]);
         } else {
-            stack.add(fixedItem, item[2]);
-            stack.add(fixedItem + 1, item[1]);
-            stack.add(fixedItem + 2, item[0]);
+            if (gameMode == GameMode.Game4x){
+                stack.add(fixedItem, item[3]);
+                stack.add(fixedItem + 1, item[2]);
+                stack.add(fixedItem + 2, item[1]);
+                stack.add(fixedItem + 3, item[0]);
+            }
+            else {
+                stack.add(fixedItem, item[2]);
+                stack.add(fixedItem + 1, item[1]);
+                stack.add(fixedItem + 2, item[0]);
+            }
         }
         cleanupStack();
     }
@@ -151,16 +206,16 @@ public class GameModel {
         animation.setStartTime(System.currentTimeMillis());
         animation.setStartValue(x);
 
-        int stackLeft = canvasWidth - stack.size() * WIDTH;
+        int stackLeft = canvasWidth - stack.size() * basicWidth;
 
-        if (x < (stackLeft - item.length * WIDTH)){
-            animation.setFinishValue(canvasWidth - stack.size() * WIDTH - item.length * WIDTH);
+        if (x < (stackLeft - item.length * basicWidth)){
+            animation.setFinishValue(canvasWidth - stack.size() * basicWidth - item.length * basicWidth);
         } else
         {
-            int itemRightBound = x + item.length * WIDTH;
+            int itemRightBound = x + item.length * basicWidth;
             // items that on the right of our current position
-            int fixedItem = (canvasWidth - itemRightBound) / WIDTH;
-            animation.setFinishValue(fixedItem * WIDTH - item.length * WIDTH);
+            int fixedItem = (canvasWidth - itemRightBound) / basicWidth;
+            animation.setFinishValue(fixedItem * basicWidth - item.length * basicWidth);
         }
 
         animation.setDuration((animation.getFinishValue() - animation.getStartValue()) / 2); // good speed
@@ -172,7 +227,7 @@ public class GameModel {
         addItemToStack();
 
         // Loose!
-        if ((stack.size() * WIDTH) >= (canvasWidth - item.length * WIDTH)){
+        if ((stack.size() * basicWidth) >= (canvasWidth - item.length * basicWidth)){
             if (onGameOver != null){
                 onGameOver.onEvent();
             }
@@ -197,7 +252,11 @@ public class GameModel {
             return; // could be happened since drawing made in separate thread
 
         // clear canvas
-        canvas.drawColor(Color.GRAY);
+//        canvas.drawColor(Color.argb(255, 204, 204, 204));
+
+        canvas.drawColor(Color.argb(255, 224,228,204));
+
+
 
         canvasWidth = canvas.getWidth();
         canvasHeight = canvas.getHeight();
@@ -213,15 +272,15 @@ public class GameModel {
             if (xPaint < 0)
                 xPaint = 0;
             // fix right bound
-            if ((xPaint + WIDTH * 3) > canvasWidth)
-                xPaint = canvasWidth - WIDTH * 3;
+            if ((xPaint + basicWidth * item.length) > canvasWidth)
+                xPaint = canvasWidth - basicWidth * item.length;
 
-            // int stackLeftBound = canvasWidth - stack.size() * WIDTH;
+            // int stackLeftBound = canvasWidth - stack.size() * basicWidth;
 
-            int itemRightBound = xPaint + 3 * WIDTH;
+            int itemRightBound = xPaint + item.length * basicWidth;
 
             // items that on the right of our current position
-            fixedItem = (canvasWidth - itemRightBound) / WIDTH;
+            fixedItem = (canvasWidth - itemRightBound) / basicWidth;
 
             if (fixedItem > stack.size())
                 fixedItem = stack.size(); // todo: -1?
@@ -230,7 +289,7 @@ public class GameModel {
             for (int i = 0; i < fixedItem; i++){
                 if (stack.size() > 0) {
                     paint.setColor(stack.get(i));
-                    canvas.drawRect(canvasWidth - (i + 1) * WIDTH, 0, canvasWidth - i * WIDTH, canvasHeight, paint);
+                    canvas.drawRect(canvasWidth - (i + 1) * basicWidth, 0, canvasWidth - i * basicWidth, canvasHeight, paint);
                 }
             }
 
@@ -240,14 +299,14 @@ public class GameModel {
                 float animationX = animation.getCurrentValue(System.currentTimeMillis() - animation.getStartTime());
                 for (int i = 0; i < item.length; i++){
                     paint.setColor(item[i]);
-                    canvas.drawRect(animationX + i * WIDTH, 0, animationX + (i + 1) * WIDTH, canvasHeight, paint);
+                    canvas.drawRect(animationX + i * basicWidth, 0, animationX + (i + 1) * basicWidth, canvasHeight, paint);
                 }
             }
             else {
                 // normal drawing
                 for (int i = 0; i < item.length; i++){
                     paint.setColor(item[i]);
-                    canvas.drawRect(xPaint + i * WIDTH, 0, xPaint + (i + 1) * WIDTH, canvasHeight, paint);
+                    canvas.drawRect(xPaint + i * basicWidth, 0, xPaint + (i + 1) * basicWidth, canvasHeight, paint);
                 }
 
             }
@@ -257,7 +316,7 @@ public class GameModel {
             if (itemsToDraw > 0){
                 for (int i = fixedItem; i < stack.size(); i++){
                     paint.setColor(stack.get(i));
-                    canvas.drawRect(xPaint - ((i - fixedItem) + 1) * WIDTH, 0, xPaint - (i - fixedItem) * WIDTH, canvasHeight, paint);
+                    canvas.drawRect(xPaint - ((i - fixedItem) + 1) * basicWidth, 0, xPaint - (i - fixedItem) * basicWidth, canvasHeight, paint);
                 }
             }
         }
@@ -273,17 +332,17 @@ public class GameModel {
 
             // Everything on the right from collapsed items
             if (i < (removedIndex - 1)){
-                canvas.drawRect(canvasWidth - (i + 1) * WIDTH, 0, canvasWidth - i * WIDTH, canvasHeight, paint);
+                canvas.drawRect(canvasWidth - (i + 1) * basicWidth, 0, canvasWidth - i * basicWidth, canvasHeight, paint);
             }
 
             // first collapsed items
             if (i == removedIndex) {
-                canvas.drawRect(canvasWidth - (removedIndex - 1) * WIDTH - currentW, 0, canvasWidth - (removedIndex - 1) * WIDTH, canvasHeight, paint);
+                canvas.drawRect(canvasWidth - (removedIndex - 1) * basicWidth - currentW, 0, canvasWidth - (removedIndex - 1) * basicWidth, canvasHeight, paint);
             }
 
             // all the rest
             if (i > removedIndex){
-                canvas.drawRect(canvasWidth - (i - 2) * WIDTH - currentW, 0, canvasWidth - (i-1) * WIDTH - currentW, canvasHeight, paint);
+                canvas.drawRect(canvasWidth - (i - 2) * basicWidth - currentW, 0, canvasWidth - (i-1) * basicWidth - currentW, canvasHeight, paint);
             }
 
         }
