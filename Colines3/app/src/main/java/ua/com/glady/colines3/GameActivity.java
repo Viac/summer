@@ -1,5 +1,7 @@
 package ua.com.glady.colines3;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class GameActivity extends ActionBarActivity implements View.OnTouchListener, View.OnClickListener {
+public class GameActivity extends ActionBarActivity implements View.OnTouchListener {
 
     TextView tvCurrentScore;
     TextView tvBestScore;
@@ -25,7 +27,7 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
     INotifyEvent onScoreUpdated = new INotifyEvent() {
         @Override
         public void onEvent() {
-        tvCurrentScore.setText(String.format(getString(R.string.CurrentScore), game.getScore()));
+        tvCurrentScore.setText(String.valueOf(game.getScore()));
         tvBestScore.setText(String.format(getString(R.string.BestScore), game.getBestScore()));
         }
     };
@@ -51,7 +53,6 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
         game.setOnScoreUpdated(onScoreUpdated);
         game.setOnGameOver(onGameOver);
 
-        // todo: switch orientation!
         game.reset();
 
         surface = (LinearLayout)findViewById(R.id.surface);
@@ -68,6 +69,7 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu_game, menu);
         return true;
     }
@@ -79,8 +81,71 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if (id == R.id.action_reset){
+            askToResetGame();
+            return true;
+        }
+
+        if (id == R.id.action_menu){
+            showMenu();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
+
+    public void askToResetGame() {
+        new AlertDialog.Builder(this)
+                .setMessage(this.getString(R.string.ResetConfirmation))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        game.reset();
+                    }
+                })
+                .setNegativeButton(getString(R.string.No), null)
+                .show();
+    }
+
+
+    public void askToExitGame() {
+        new AlertDialog.Builder(this)
+                .setMessage(this.getString(R.string.ExitConfirmation))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finish();
+                    }
+                })
+                .setNegativeButton(getString(R.string.No), null)
+                .show();
+    }
+
+    public void showMenu() {
+
+        String[] options = {
+                getString(R.string.Restart),
+                getString(R.string.Info),
+                getString(R.string.Exit)
+        };
+
+        new AlertDialog.Builder(this)
+                .setItems(options, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                askToResetGame();
+                                break;
+                            case 1:
+                                break;
+                            case 2:
+                                askToExitGame();
+                                break;
+                        }
+                    }
+                }).show();
+    }
+
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -101,10 +166,5 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
         return true;
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.btRestart){
-            game.reset();
-        }
-    }
+
 }

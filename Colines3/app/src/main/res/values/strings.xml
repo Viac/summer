@@ -3,8 +3,19 @@
 
     <string name="hello_world">Hello world!</string>
 
+    <string name="Exit">Exit</string>
     <string name="Restart">Restart</string>
     <string name="Info">Info</string>
-    <string name="CurrentScore" formatted="false">%d lines</string>
-    <string name="BestScore" formatted="false">Get 1001 to win (best: %d)</string>
+    <string name="BestScore">Get 1001 to win\n Best: %1$d</string>
+
+    <string name="NumberStub">39286</string>
+
+    <string name="ResetConfirmation">Start new game?</string>
+
+    <string name="ExitConfirmation">Exit the game?</string>
+
+    <string name="Yes">Yes</string>
+    <string name="No">No</string>
+
+
 </resources>

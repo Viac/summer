@@ -4,19 +4,11 @@
     <item android:id="@+id/action_menu"
         android:title=""
         android:icon="@android:drawable/ic_menu_more"
-        android:orderInCategory="100"
-        app:showAsAction="ifRoom" />
-
-    <item android:id="@+id/action_reset"
-        android:title=""
-        android:icon="@android:drawable/ic_menu_rotate"
         android:orderInCategory="101"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_info"
-        android:icon="@android:drawable/ic_menu_info_details"
-        app:showAsAction="ifRoom"
-        android:orderInCategory="102"
-        android:title="">
-    </item>
+    <item android:id="@+id/action_reset"
+        android:title="@string/Restart"
+        android:icon="@android:drawable/ic_menu_rotate"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom" />
 </menu>
