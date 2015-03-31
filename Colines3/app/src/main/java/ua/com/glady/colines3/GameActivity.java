@@ -14,6 +14,8 @@ import android.widget.Toast;
 public class GameActivity extends ActionBarActivity implements View.OnTouchListener {
 
     TextView score;
+    TextView tvBestScore;
+
     LinearLayout surface;
 
     GameSurfaceView gameView;
@@ -23,14 +25,16 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
     INotifyEvent onScoreUpdated = new INotifyEvent() {
         @Override
         public void onEvent() {
-            score.setText(String.valueOf(game.getScore()));
+        score.setText(String.valueOf(game.getScore()));
+        tvBestScore.setText(String.valueOf(game.getBestScore()));
         }
     };
 
     INotifyEvent onGameOver = new INotifyEvent() {
         @Override
         public void onEvent() {
-            Toast.makeText(getApplicationContext(), "Game over!!!!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Game over!!!!!", Toast.LENGTH_LONG).show();
+            game.saveBestScore();
             game.reset();
         }
     };
@@ -41,14 +45,18 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
         setContentView(R.layout.activity_game);
 
         score = (TextView) this.findViewById(R.id.tvScore);
+        tvBestScore = (TextView) findViewById(R.id.tvBestScore);
 
-        game = new GameModel();
+        game = new GameModel(getPreferences(MODE_PRIVATE));
         game.setOnScoreUpdated(onScoreUpdated);
         game.setOnGameOver(onGameOver);
-        game.setGameMode(GameModel.GameMode.Game3x);
 
         // todo: switch orientation!
-        game.reset();
+        try {
+            game.reset();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         surface = (LinearLayout)findViewById(R.id.surface);
         surface.setOnTouchListener(this);
@@ -84,7 +92,11 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
     }
 
     private void reset() {
-        game.reset();
+        try {
+            game.reset();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

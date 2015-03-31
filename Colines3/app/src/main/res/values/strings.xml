@@ -1,8 +1,11 @@
 <resources>
-    <string name="app_name">Colines3</string>
+    <string name="app_name">1001 lines</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_run">V</string>
     <string name="action_reset">X</string>
     <string name="Restart">Restart</string>
+    <string name="Score">Score</string>
+    <string name="ScoreMax">1000000</string>
+    <string name="BestScore">Best score</string>
 </resources>

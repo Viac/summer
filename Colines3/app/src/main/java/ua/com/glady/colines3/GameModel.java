@@ -1,5 +1,6 @@
 package ua.com.glady.colines3;
 
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -16,13 +17,9 @@ import ua.com.glady.colines3.Tools.AnimationTimer;
  */
 public class GameModel {
 
-    public void setGameMode(GameMode gameMode) {
-        this.gameMode = gameMode;
-    }
+    private static final String BEST_SCORE_PREFERENCES_KEY = "GameBestScore";
 
-    public enum GameMode {Game4x, Game3x, GamePattern};
-
-    private GameMode gameMode;
+    private SharedPreferences sPreferences;
 
     private final int UNDEFINED = -1;
 
@@ -30,24 +27,12 @@ public class GameModel {
 
     private INotifyEvent onGameOver;
 
-    private int[] colors = { Color.YELLOW, Color.BLUE, Color.GREEN, Color.RED };
-
-
-//    private int[] colors = {
-//            Color.argb(255, 228,  68,  36),
-//            Color.argb(255, 103, 188, 219),
-//            Color.argb(255, 162, 171,  88),
-//            Color.argb(255, 255, 255, 255)
-//    };
-
-
-//    private int[] colors = {
-//            Color.argb(255, 85,98,112),
-//            Color.argb(255, 78,205,196),
-//            Color.argb(255, 199,244,100),
-//            Color.argb(255, 255,107,107)
-//    };
-
+    private int[] colors = {
+            Color.argb(255, 228,  68,  36),
+            Color.argb(255, 103, 188, 219),
+            Color.argb(255, 162, 171,  88),
+            Color.argb(255, 255, 255, 255)
+    };
 
     private ArrayList<Integer> stack;
 
@@ -67,6 +52,8 @@ public class GameModel {
 
     private int score = 0;
 
+    private int bestScore = 0;
+
     private boolean animateDrop;
 
     private boolean animateCleanUp;
@@ -79,7 +66,7 @@ public class GameModel {
 
     Paint paint; // used in animation, declared as object variable to increase performance
 
-    public GameModel(){
+    public GameModel(SharedPreferences sPreferences){
         stack = new ArrayList<>();
         item = new int[3];
         createNewItem();
@@ -88,20 +75,20 @@ public class GameModel {
         animation = new AnimationTimer();
         removedIndex = UNDEFINED;
         paint = new Paint();
+        this.sPreferences = sPreferences;
     }
 
-    public void reset(){
+    public void reset() {
         stack.clear();
-        score = 0;
 
-        if (gameMode == GameMode.Game4x){
-            item = new int[4];
-            basicWidth = 13;
-        }
-        else {
-            item = new int[3];
-            basicWidth = 20;
-        }
+        score = 0;
+        bestScore = sPreferences.getInt(BEST_SCORE_PREFERENCES_KEY, 0);
+
+        if (onScoreUpdated != null)
+            onScoreUpdated.onEvent();
+
+        // todo: some another for landscape
+        basicWidth = 20;
 
         createNewItem();
     }
@@ -129,16 +116,6 @@ public class GameModel {
                 found = true;
         }
         item[2] = colors[index];
-
-        if (gameMode == GameMode.Game4x){
-            found = false;
-            while (! found){
-                index = r.nextInt(colors.length);
-                if (colors[index] != item[2])
-                    found = true;
-            }
-            item[3] = colors[index];
-        }
 
     }
 
@@ -170,35 +147,26 @@ public class GameModel {
             stack.remove(removedIndex - 1);
 
             score++;
+            if (score > bestScore)
+                bestScore = score;
             if (onScoreUpdated != null)
                 onScoreUpdated.onEvent();
             removedIndex = getIndexToRemove();
         }
     }
 
-    public void addItemToStack(){
+    public void addItemToStack() {
         if (fixedItem >= stack.size()) {
-            if (gameMode == GameMode.Game4x)
-                stack.add(item[3]);
             stack.add(item[2]);
             stack.add(item[1]);
             stack.add(item[0]);
         } else {
-            if (gameMode == GameMode.Game4x){
-                stack.add(fixedItem, item[3]);
-                stack.add(fixedItem + 1, item[2]);
-                stack.add(fixedItem + 2, item[1]);
-                stack.add(fixedItem + 3, item[0]);
-            }
-            else {
-                stack.add(fixedItem, item[2]);
-                stack.add(fixedItem + 1, item[1]);
-                stack.add(fixedItem + 2, item[0]);
-            }
+            stack.add(fixedItem, item[2]);
+            stack.add(fixedItem + 1, item[1]);
+            stack.add(fixedItem + 2, item[0]);
         }
         cleanupStack();
     }
-
 
     public void drop(int x){
         animateDrop = true;
@@ -351,6 +319,17 @@ public class GameModel {
     public int getScore() {
         return score;
     }
+
+    public int getBestScore() {
+        return bestScore;
+    }
+
+    public void saveBestScore() {
+        SharedPreferences.Editor ed = sPreferences.edit();
+        ed.putInt(BEST_SCORE_PREFERENCES_KEY, bestScore);
+        ed.commit();
+    }
+
 
     public void setOnScoreUpdated(INotifyEvent onScoreUpdated) {
         this.onScoreUpdated = onScoreUpdated;
