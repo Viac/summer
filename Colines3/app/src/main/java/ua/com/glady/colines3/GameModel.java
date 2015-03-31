@@ -27,11 +27,12 @@ public class GameModel {
 
     private INotifyEvent onGameOver;
 
-    private int[] colors = {
+    private static final int[] COLORS = {
             Color.argb(255, 228,  68,  36),
             Color.argb(255, 103, 188, 219),
             Color.argb(255, 162, 171,  88),
-            Color.argb(255, 255, 255, 255)
+            Color.argb(255, 255, 255, 255),
+            Color.argb(255,   0, 255, 255)
     };
 
     private ArrayList<Integer> stack;
@@ -97,26 +98,25 @@ public class GameModel {
 
         Random r = new Random();
 
-        int index = r.nextInt(colors.length);
+        int index = r.nextInt(COLORS.length);
 
-        item[0] = colors[index];
+        item[0] = COLORS[index];
 
         boolean found = false;
         while (! found){
-            index = r.nextInt(colors.length);
-            if (colors[index] != item[0])
+            index = r.nextInt(COLORS.length);
+            if (COLORS[index] != item[0])
                 found = true;
         }
-        item[1] = colors[index];
+        item[1] = COLORS[index];
 
         found = false;
         while (! found){
-            index = r.nextInt(colors.length);
-            if (colors[index] != item[1])
+            index = r.nextInt(COLORS.length);
+            if (COLORS[index] != item[1])
                 found = true;
         }
-        item[2] = colors[index];
-
+        item[2] = COLORS[index];
     }
 
     private int getIndexToRemove(){
@@ -210,7 +210,6 @@ public class GameModel {
         do
             ticksAnimated = System.currentTimeMillis() - animation.getStartTime();
             // do nothing, animation painted
-            // todo: security watcher!
         while (ticksAnimated < animation.getDuration());
     }
 
@@ -218,9 +217,6 @@ public class GameModel {
 
         if (canvas == null)
             return; // could be happened since drawing made in separate thread
-
-        // clear canvas
-//        canvas.drawColor(Color.argb(255, 204, 204, 204));
 
         canvas.drawColor(Color.argb(255, 224,228,204));
 
@@ -241,15 +237,13 @@ public class GameModel {
             if ((xPaint + basicWidth * item.length) > canvasWidth)
                 xPaint = canvasWidth - basicWidth * item.length;
 
-            // int stackLeftBound = canvasWidth - stack.size() * basicWidth;
-
             int itemRightBound = xPaint + item.length * basicWidth;
 
             // items that on the right of our current position
             fixedItem = (canvasWidth - itemRightBound) / basicWidth;
 
             if (fixedItem > stack.size())
-                fixedItem = stack.size(); // todo: -1?
+                fixedItem = stack.size();
 
             // drawing items that on the right of our current position
             for (int i = 0; i < fixedItem; i++){
@@ -287,6 +281,9 @@ public class GameModel {
             }
         }
 
+        paint.setColor(Color.BLACK);
+        int xLimiter = item.length * basicWidth;
+        canvas.drawLine(xLimiter, 0, xLimiter, canvasHeight, paint);
     }
 
     private void paintCleanUp(Canvas canvas) {
