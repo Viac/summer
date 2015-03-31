@@ -11,70 +11,75 @@
         android:id="@+id/panParent">
 
         <RelativeLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="#EEEEEE"
-            android:padding="8dp">
+            android:id="@+id/panMainMenu">
 
-            <TextView
+            <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/Score"
-                android:id="@+id/tvScoreCaption"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:textColor="#ff777777" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/ScoreMax"
-                android:id="@+id/tvScore"
-                android:textStyle="bold"
-                android:layout_toRightOf="@+id/tvScoreCaption"
-                android:layout_toEndOf="@+id/tvScoreCaption"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="8dp" />
-
-            <TextView android:text="@string/BestScore" android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tvBestScoreCaption"
-                android:layout_gravity="center_vertical|right"
+                android:id="@+id/btInfo"
+                android:src="@android:drawable/ic_menu_info_details"
+                android:background="#ffffffff"
+                android:contentDescription="@string/Info"
+                android:layout_marginRight="33dp"
+                android:layout_marginEnd="33dp"
+                android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentTop="false"
-                android:layout_alignParentBottom="false"
-                android:layout_marginRight="8dp"
-                android:layout_alignParentEnd="false"
-                android:layout_marginTop="0dp" />
+                android:layout_alignParentEnd="true" />
 
-            <TextView
+            <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/ScoreMax"
-                android:id="@+id/tvBestScore"
-                android:layout_below="@+id/tvBestScoreCaption"
-                android:layout_alignRight="@+id/tvBestScoreCaption"
-                android:layout_alignEnd="@+id/tvBestScoreCaption"
-                android:textStyle="bold"
-                android:textAlignment="textEnd" />
+                android:id="@+id/btRestart"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/btInfo"
+                android:layout_toStartOf="@+id/btInfo"
+                android:src="@android:drawable/ic_menu_rotate"
+                android:background="#ffffffff"
+                android:contentDescription="@string/Restart"
+                android:layout_alignParentEnd="true" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/panAppName">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="@string/CurrentScore"
+                    android:id="@+id/tvCurrentScore"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/BestScore"
+                    android:id="@+id/tvBestScore"
+                    android:textColor="#666666"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
 
         </RelativeLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="match_parent"
+            android:layout_height="fill_parent"
             android:id="@+id/surface"
             android:background="@drawable/border_shadow"
-            android:layout_marginBottom="8dp"
-            android:layout_margin="8dp"></LinearLayout>
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"></LinearLayout>
 
     </LinearLayout>
 

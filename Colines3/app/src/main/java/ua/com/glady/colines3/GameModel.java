@@ -224,8 +224,6 @@ public class GameModel {
 
         canvas.drawColor(Color.argb(255, 224,228,204));
 
-
-
         canvasWidth = canvas.getWidth();
         canvasHeight = canvas.getHeight();
 

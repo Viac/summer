@@ -11,9 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class GameActivity extends ActionBarActivity implements View.OnTouchListener {
+public class GameActivity extends ActionBarActivity implements View.OnTouchListener, View.OnClickListener {
 
-    TextView score;
+    TextView tvCurrentScore;
     TextView tvBestScore;
 
     LinearLayout surface;
@@ -25,8 +25,8 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
     INotifyEvent onScoreUpdated = new INotifyEvent() {
         @Override
         public void onEvent() {
-        score.setText(String.valueOf(game.getScore()));
-        tvBestScore.setText(String.valueOf(game.getBestScore()));
+        tvCurrentScore.setText(String.format(getString(R.string.CurrentScore), game.getScore()));
+        tvBestScore.setText(String.format(getString(R.string.BestScore), game.getBestScore()));
         }
     };
 
@@ -44,7 +44,7 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        score = (TextView) this.findViewById(R.id.tvScore);
+        tvCurrentScore = (TextView) this.findViewById(R.id.tvCurrentScore);
         tvBestScore = (TextView) findViewById(R.id.tvBestScore);
 
         game = new GameModel(getPreferences(MODE_PRIVATE));
@@ -52,11 +52,7 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
         game.setOnGameOver(onGameOver);
 
         // todo: switch orientation!
-        try {
-            game.reset();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        game.reset();
 
         surface = (LinearLayout)findViewById(R.id.surface);
         surface.setOnTouchListener(this);
@@ -83,20 +79,7 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_reset) {
-            reset();
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
-    }
-
-    private void reset() {
-        try {
-            game.reset();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -116,5 +99,12 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
                 break;
         }
         return true;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.btRestart){
+            game.reset();
+        }
     }
 }

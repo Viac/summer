@@ -2,10 +2,9 @@
     <string name="app_name">1001 lines</string>
 
     <string name="hello_world">Hello world!</string>
-    <string name="action_run">V</string>
-    <string name="action_reset">X</string>
+
     <string name="Restart">Restart</string>
-    <string name="Score">Score</string>
-    <string name="ScoreMax">1000000</string>
-    <string name="BestScore">Best score</string>
+    <string name="Info">Info</string>
+    <string name="CurrentScore" formatted="false">%d lines</string>
+    <string name="BestScore" formatted="false">Get 1001 to win (best: %d)</string>
 </resources>
