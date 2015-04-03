@@ -5,8 +5,12 @@
 
     <string name="Exit">Exit</string>
     <string name="Restart">Restart</string>
+    <string name="Continue">Continue</string>
     <string name="Info">Info</string>
-    <string name="BestScore">Get 1001 to win\n Best: %1$d</string>
+    <string name="BestScore">Collapse 1001 to win\nBest: %1$d</string>
+    <string name="Share">Share on Facebook</string>
+    <string name="Rate">Rate</string>
+    <string name="NewRecord">New record</string>
 
     <string name="NumberStub">39286</string>
 
@@ -17,5 +21,9 @@
     <string name="Yes">Yes</string>
     <string name="No">No</string>
 
+
+    <string name="GameOver">Game over</string>
+    <string name="WinCaption">Winner!</string>
+    <string name="WinText">You got it!</string>
 
 </resources>

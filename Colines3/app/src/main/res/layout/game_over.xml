@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/border">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#fff"
+            android:id="@+id/panGameWinContent"
+            android:layout_centerInParent="true"
+            android:weightSum="1">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imCup"
+                android:background="@mipmap/ic_win"
+                android:contentDescription="@string/WinCaption"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/hello_world"
+                android:id="@+id/tvGameOverCaption"
+                android:textStyle="bold"
+                android:textColor="#777"
+                android:clickable="false"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/hello_world"
+                android:id="@+id/tvGameOverMessage"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="24dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/panSupportBase"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/panSupport"
+                    android:layout_alignWithParentIfMissing="false"
+                    android:layout_centerInParent="true">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/imShare"
+                        android:scaleType="centerInside"
+                        android:background="@android:drawable/ic_menu_share"
+                        android:layout_marginLeft="24dp"
+                        android:layout_marginRight="24dp"
+                        android:contentDescription="@string/Share"
+                        android:clickable="true" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/imRate"
+                        android:background="@android:drawable/btn_star"
+                        android:scaleType="centerInside"
+                        android:layout_marginLeft="24dp"
+                        android:layout_marginRight="24dp"
+                        android:contentDescription="@string/Rate"
+                        android:clickable="true" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/Continue"
+                android:id="@+id/tvContinue"
+                android:textStyle="bold"
+                android:textColor="#777"
+                android:clickable="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</LinearLayout>

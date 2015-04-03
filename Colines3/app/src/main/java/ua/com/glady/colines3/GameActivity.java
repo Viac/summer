@@ -1,7 +1,9 @@
 package ua.com.glady.colines3;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,34 +14,26 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import ua.com.glady.colines3.Tools.GamePreferences;
 
 public class GameActivity extends ActionBarActivity implements View.OnTouchListener {
 
+    private static final int WIN_SCORE = 1001;
+
     TextView tvCurrentScore;
+
     TextView tvBestScore;
 
     LinearLayout surface;
 
     GameSurfaceView gameView;
 
+    GamePreferences preferences;
+
     GameModel game;
 
-    INotifyEvent onScoreUpdated = new INotifyEvent() {
-        @Override
-        public void onEvent() {
-        tvCurrentScore.setText(String.valueOf(game.getScore()));
-        tvBestScore.setText(String.format(getString(R.string.BestScore), game.getBestScore()));
-        }
-    };
-
-    INotifyEvent onGameOver = new INotifyEvent() {
-        @Override
-        public void onEvent() {
-            Toast.makeText(getApplicationContext(), "Game over!!!!!", Toast.LENGTH_LONG).show();
-            game.saveBestScore();
-            game.reset();
-        }
-    };
+    // Alias for anonymous methods
+    final Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,22 +43,48 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
         tvCurrentScore = (TextView) this.findViewById(R.id.tvCurrentScore);
         tvBestScore = (TextView) findViewById(R.id.tvBestScore);
 
-        game = new GameModel(getPreferences(MODE_PRIVATE));
-        game.setOnScoreUpdated(onScoreUpdated);
-        game.setOnGameOver(onGameOver);
+        preferences = new GamePreferences(getPreferences(MODE_PRIVATE));
+
+        game = new GameModel(preferences);
+        game.setScoreUpdatedListener(onScoreUpdated);
+        game.setGameOverListener(onGameOver);
 
         game.reset();
 
-        surface = (LinearLayout)findViewById(R.id.surface);
+        surface = (LinearLayout) findViewById(R.id.surface);
         surface.setOnTouchListener(this);
 
         gameView = new GameSurfaceView(this, game);
 
         surface.addView(gameView);
 
-        // initial scores value
+        // initial score value
         onScoreUpdated.onEvent();
     }
+
+    INotifyEvent onScoreUpdated = new INotifyEvent() {
+        @Override
+        public void onEvent() {
+            tvCurrentScore.setText(String.valueOf(game.getScore()));
+            tvBestScore.setText(String.format(getString(R.string.BestScore), game.getBestScore()));
+
+            if ((game.getScore() >= WIN_SCORE) && (!game.getAlreadyCongratulated())) {
+                GameOver go = new GameOver();
+                go.showPopup(context, preferences, true, game.getScore());
+                game.setAlreadyCongratulated(true);
+            }
+        }
+    };
+
+    INotifyEvent onGameOver = new INotifyEvent() {
+        @Override
+        public void onEvent() {
+            GameOver go = new GameOver();
+            go.showPopup(context, preferences, false, game.getScore());
+            game.saveBestScore();
+            game.reset();
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -81,13 +101,25 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_reset){
+        if (id == R.id.action_reset) {
             askToResetGame();
             return true;
         }
 
-        if (id == R.id.action_menu){
-            showMenu();
+        if (id == R.id.action_settings) {
+            GameplayPreferences.show(this, preferences);
+            return true;
+        }
+
+
+
+        if (id == R.id.action_info) {
+            Toast.makeText(this, "Implement me!", Toast.LENGTH_SHORT).show();
+
+            SharedPreferences.Editor ed = preferences.getsPref().edit();
+            ed.clear();
+            ed.commit();
+
             return true;
         }
 
@@ -100,6 +132,7 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
                 .setCancelable(false)
                 .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        game.saveBestScore();
                         game.reset();
                     }
                 })
@@ -107,57 +140,17 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
                 .show();
     }
 
-
-    public void askToExitGame() {
-        new AlertDialog.Builder(this)
-                .setMessage(this.getString(R.string.ExitConfirmation))
-                .setCancelable(false)
-                .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        finish();
-                    }
-                })
-                .setNegativeButton(getString(R.string.No), null)
-                .show();
-    }
-
-    public void showMenu() {
-
-        String[] options = {
-                getString(R.string.Restart),
-                getString(R.string.Info),
-                getString(R.string.Exit)
-        };
-
-        new AlertDialog.Builder(this)
-                .setItems(options, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case 0:
-                                askToResetGame();
-                                break;
-                            case 1:
-                                break;
-                            case 2:
-                                askToExitGame();
-                                break;
-                        }
-                    }
-                }).show();
-    }
-
-
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         int x = (int) event.getX();
 
         switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN: // нажатие
+            case MotionEvent.ACTION_DOWN: // pressing
                 break;
-            case MotionEvent.ACTION_MOVE: // движение
+            case MotionEvent.ACTION_MOVE: // moving
                 game.setX(x);
                 break;
-            case MotionEvent.ACTION_UP: // отпускание
+            case MotionEvent.ACTION_UP: // releasing
                 game.drop(x);
                 break;
             case MotionEvent.ACTION_CANCEL:
@@ -166,5 +159,12 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
         return true;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the user's current game state
+        game.saveBestScore();
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
 
 }
