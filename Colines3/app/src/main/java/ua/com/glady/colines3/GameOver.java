@@ -69,7 +69,7 @@ public class GameOver {
         (view.findViewById(R.id.imRate)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=ua.com.glady.uacc")));
+                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=ua.com.glady.colines3")));
                 gamePreferences.setAlreadyRated(true);
             }
         });

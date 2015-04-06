@@ -18,20 +18,20 @@ import ua.com.glady.colines3.Tools.GamePreferences;
 
 public class GameActivity extends ActionBarActivity implements View.OnTouchListener {
 
-    TextView tvCurrentScore;
+    private TextView tvCurrentScore;
 
-    TextView tvBestScore;
+    private TextView tvBestScore;
 
-    LinearLayout surface;
+    private LinearLayout surface;
 
-    GameSurfaceView gameView;
+    private GameSurfaceView gameView;
 
-    GamePreferences preferences;
+    private GamePreferences preferences;
 
-    GameModel game;
+    private GameModel game;
 
     // Alias for anonymous methods
-    final Context context = this;
+    private final Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +63,7 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
     /**
      * Reacts on event "Game score updated"
      */
-    INotifyEvent onScoreUpdated = new INotifyEvent() {
+    private final INotifyEvent onScoreUpdated = new INotifyEvent() {
         @Override
         public void onEvent() {
             // We need to invalidate information on the screen
@@ -71,9 +71,8 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
             tvBestScore.setText(String.format(getString(R.string.BestScore), game.getBestScore()));
 
             // And show a cup when user get win score
-            if ((game.getScore() >= game.WIN_SCORE) && (!game.getAlreadyCongratulated())) {
-                GameOver go = new GameOver();
-                go.showPopup(context, preferences, true, game.getScore());
+            if ((game.getScore() >= GameModel.WIN_SCORE) && (game.isNotCongratulated())) {
+                GameOver.showPopup(context, preferences, true, game.getScore());
                 game.setAlreadyCongratulated(true);
             }
         }
@@ -82,11 +81,10 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
     /**
      * Reacts on event "game over"
      */
-    INotifyEvent onGameOver = new INotifyEvent() {
+    private final INotifyEvent onGameOver = new INotifyEvent() {
         @Override
         public void onEvent() {
-            GameOver go = new GameOver();
-            go.showPopup(context, preferences, false, game.getScore());
+            GameOver.showPopup(context, preferences, false, game.getScore());
             game.saveBestScore();
             game.reset();
         }
@@ -133,7 +131,7 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
     /**
      * Shows a popup with confirmation for restart game
      */
-    public void askToResetGame() {
+    void askToResetGame() {
         new AlertDialog.Builder(this)
                 .setMessage(this.getString(R.string.ResetConfirmation))
                 .setCancelable(false)

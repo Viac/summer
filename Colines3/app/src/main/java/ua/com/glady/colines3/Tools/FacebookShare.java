@@ -17,7 +17,7 @@ public class FacebookShare {
     public static void shareOnFacebook(Context context){
 
         // todo: right package name
-        String urlToShare = "https://play.google.com/store/apps/details?id=ua.com.glady.uacc";
+        String urlToShare = "https://play.google.com/store/apps/details?id=ua.com.glady.colines3";
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
 

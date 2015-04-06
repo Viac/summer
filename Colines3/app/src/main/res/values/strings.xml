@@ -3,7 +3,6 @@
 
     <string name="hello_world">Hello world!</string>
 
-    <string name="Exit">Exit</string>
     <string name="Restart">Restart</string>
     <string name="Continue">Continue</string>
     <string name="Info">Info</string>
@@ -16,11 +15,8 @@
 
     <string name="ResetConfirmation">Start new game?</string>
 
-    <string name="ExitConfirmation">Exit the game?</string>
-
     <string name="Yes">Yes</string>
     <string name="No">No</string>
-
 
     <string name="GameOver">Game over</string>
     <string name="WinCaption">Winner!</string>

@@ -1,5 +1,6 @@
 package ua.com.glady.colines3;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -7,15 +8,18 @@ import android.view.SurfaceView;
 /**
  * Implements object to draw game state
  *
+ * lint warning suppressed - we do not need rest of the constructors overloaded
+ *
  * Created by Slava on 27.03.2015.
  */
+@SuppressLint("ViewConstructor")
 public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
     // Drawing performs in separate thread
     private DrawThread drawThread;
 
     // Source of data to draw
-    private GameModel game;
+    private final GameModel game;
 
     public GameSurfaceView(Context context, GameModel game) {
         super(context);

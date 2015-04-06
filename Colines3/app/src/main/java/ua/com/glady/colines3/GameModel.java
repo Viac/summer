@@ -20,7 +20,7 @@ public class GameModel {
     // This is a color of main board
     private static final int BACKGROUND_COLOR = Color.argb(255, 224, 228, 204);
 
-    private static final int ANIMATION_COLLAPSE_DURATION = 50;
+    private static final int ANIMATION_COLLAPSE_DURATION = 70;
 
     // There are colors of items
     private static final int STACK_COLOR1 = Color.argb(255, 241,  90,  90);
@@ -41,7 +41,7 @@ public class GameModel {
     public static final int WIN_SCORE = 1001;
 
     // Need to control scores etc.
-    private GamePreferences gamePreferences;
+    private final GamePreferences gamePreferences;
 
     private final int UNDEFINED = -1;
 
@@ -59,7 +59,7 @@ public class GameModel {
             STACK_COLOR9, STACK_COLOR10};
 
     // Current stack (all items that already dropped)
-    private ArrayList<Integer> stack;
+    private final ArrayList<Integer> stack;
 
     // Current 'active' item (which user interact with)
     private int[] item;
@@ -78,7 +78,7 @@ public class GameModel {
     private int x = 0;
 
     // declared as a field in order handle animation
-    public int canvasWidth = 0;
+    private int canvasWidth = 0;
 
     // number of items on the right from active item
     private int fixedItem = 0;
@@ -105,10 +105,10 @@ public class GameModel {
     private int canvasHeight;
 
     // sample calculator of anything for animation
-    AnimationTimer animation;
+    private final AnimationTimer animation;
 
     // used in animation, declared as object variable to increase performance
-    Paint paint;
+    private final Paint paint;
 
     /**
      * Creates game model
@@ -389,10 +389,6 @@ public class GameModel {
             }
         }
 
-        // Controversial point. It's hard to say unambiguously do we need to show a limiter line
-//        paint.setColor(Color.BLACK);
-//        int xLimiter = item.length * basicW;
-//        canvas.drawLine(xLimiter, 0, xLimiter, canvasHeight, paint);
     }
 
     /**
@@ -445,8 +441,8 @@ public class GameModel {
         this.gameOverListener = gameOverListener;
     }
 
-    public boolean getAlreadyCongratulated() {
-        return alreadyCongratulated;
+    public boolean isNotCongratulated() {
+        return !alreadyCongratulated;
     }
 
     public void setAlreadyCongratulated(boolean alreadyCongratulated) {

@@ -13,7 +13,7 @@ class DrawThread extends Thread{
     private boolean runFlag = false;
     private final SurfaceHolder surfaceHolder;
 
-    private GameModel game;
+    private final GameModel game;
 
     public DrawThread(SurfaceHolder surfaceHolder, GameModel game){
         this.surfaceHolder = surfaceHolder;

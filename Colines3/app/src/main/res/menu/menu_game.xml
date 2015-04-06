@@ -5,7 +5,7 @@
         android:title=""
         android:icon="@android:drawable/ic_menu_info_details"
         android:orderInCategory="101"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item android:id="@+id/action_reset"
         android:title="@string/Restart"
         android:icon="@android:drawable/ic_menu_rotate"
@@ -15,5 +15,5 @@
         android:title="@string/Restart"
         android:icon="@android:drawable/ic_menu_manage"
         android:orderInCategory="100"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 </menu>

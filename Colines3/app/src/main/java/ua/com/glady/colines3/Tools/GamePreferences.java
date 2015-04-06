@@ -26,7 +26,7 @@ public class GamePreferences {
         return sPref;
     }
 
-    private SharedPreferences sPref;
+    private final SharedPreferences sPref;
 
     public GamePreferences(SharedPreferences sPref){
         this.sPref = sPref;
