@@ -18,8 +18,6 @@ import ua.com.glady.colines3.Tools.GamePreferences;
 
 public class GameActivity extends ActionBarActivity implements View.OnTouchListener {
 
-    private static final int WIN_SCORE = 1001;
-
     TextView tvCurrentScore;
 
     TextView tvBestScore;
@@ -62,13 +60,18 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
         onScoreUpdated.onEvent();
     }
 
+    /**
+     * Reacts on event "Game score updated"
+     */
     INotifyEvent onScoreUpdated = new INotifyEvent() {
         @Override
         public void onEvent() {
+            // We need to invalidate information on the screen
             tvCurrentScore.setText(String.valueOf(game.getScore()));
             tvBestScore.setText(String.format(getString(R.string.BestScore), game.getBestScore()));
 
-            if ((game.getScore() >= WIN_SCORE) && (!game.getAlreadyCongratulated())) {
+            // And show a cup when user get win score
+            if ((game.getScore() >= game.WIN_SCORE) && (!game.getAlreadyCongratulated())) {
                 GameOver go = new GameOver();
                 go.showPopup(context, preferences, true, game.getScore());
                 game.setAlreadyCongratulated(true);
@@ -76,6 +79,9 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
         }
     };
 
+    /**
+     * Reacts on event "game over"
+     */
     INotifyEvent onGameOver = new INotifyEvent() {
         @Override
         public void onEvent() {
@@ -111,8 +117,6 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
             return true;
         }
 
-
-
         if (id == R.id.action_info) {
             Toast.makeText(this, "Implement me!", Toast.LENGTH_SHORT).show();
 
@@ -126,6 +130,9 @@ public class GameActivity extends ActionBarActivity implements View.OnTouchListe
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Shows a popup with confirmation for restart game
+     */
     public void askToResetGame() {
         new AlertDialog.Builder(this)
                 .setMessage(this.getString(R.string.ResetConfirmation))

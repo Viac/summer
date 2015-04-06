@@ -3,6 +3,9 @@ package ua.com.glady.colines3.Tools;
 import android.content.SharedPreferences;
 
 /**
+ * Wrapper around shared preferences object to improve code readability
+ * Not commented much since functions names are obvious enough
+ *
  * Created by Slava on 02.04.2015.
  */
 public class GamePreferences {
@@ -59,10 +62,12 @@ public class GamePreferences {
         ed.commit();
     }
 
+    // This setting is not used in real production system, only for gameability test
     public int getColorsCount(){
         return sPref.getInt(COLORS_COUNT_PREFERENCES_KEY, 5);
     }
 
+    // This setting is not used in real production system, only for gameability test
     public int getBasicWidth(){
         return sPref.getInt(BASIC_WIDTH_PREFERENCES_KEY, 30);
     }

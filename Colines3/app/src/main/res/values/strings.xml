@@ -25,5 +25,6 @@
     <string name="GameOver">Game over</string>
     <string name="WinCaption">Winner!</string>
     <string name="WinText">You got it!</string>
+    <string name="Score">Score</string>
 
 </resources>

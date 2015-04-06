@@ -13,10 +13,21 @@ import android.widget.Toast;
 import ua.com.glady.colines3.Tools.GamePreferences;
 
 /**
+ * This UI used while gameplay experiments. It allows to set up some game constants in runtime
+ * Hardly I don't think it would be used in production
+ *
  * Created by Slava on 03.04.2015.
  */
 public class GameplayPreferences {
 
+    /**
+     * Shows popup which allows to set up gameplay preferences
+     *
+     * ! UI elements is untranslated
+     *
+     * @param mContext parent context
+     * @param preferences it's easy to operate with wrapper
+     */
     public static void show(final Context mContext, final GamePreferences preferences){
 
         final Dialog d = new Dialog(mContext);
@@ -54,7 +65,6 @@ public class GameplayPreferences {
             }
         });
         l.addView(btOk);
-
 
         d.setContentView(l);
         d.show();

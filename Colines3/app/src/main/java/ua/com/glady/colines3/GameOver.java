@@ -46,7 +46,7 @@ public class GameOver {
         if (gameScore > gamePreferences.getBestSavedScore())
             ((TextView) (view.findViewById(R.id.tvGameOverMessage))).setText(mContext.getString(R.string.NewRecord) + ": " + gameScore);
         else
-            (view.findViewById(R.id.tvGameOverMessage)).setVisibility(View.INVISIBLE);
+            ((TextView) (view.findViewById(R.id.tvGameOverMessage))).setText(mContext.getString(R.string.Score) + ": " + gameScore);
 
         // Making Continue button
         (view.findViewById(R.id.tvContinue)).setOnClickListener(new View.OnClickListener() {

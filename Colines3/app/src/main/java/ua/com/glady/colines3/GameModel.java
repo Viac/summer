@@ -20,6 +20,8 @@ public class GameModel {
     // This is a color of main board
     private static final int BACKGROUND_COLOR = Color.argb(255, 224, 228, 204);
 
+    private static final int ANIMATION_COLLAPSE_DURATION = 50;
+
     // There are colors of items
     private static final int STACK_COLOR1 = Color.argb(255, 241,  90,  90);
     private static final int STACK_COLOR2 = Color.argb(255, 240, 196,  25);
@@ -32,6 +34,11 @@ public class GameModel {
     private static final int STACK_COLOR8 = Color.BLUE;
     private static final int STACK_COLOR9 = Color.CYAN;
     private static final int STACK_COLOR10 = Color.YELLOW;
+
+    // Each new item consists of this number of piles.
+    private static final int PILES_IN_ITEM = 3;
+
+    public static final int WIN_SCORE = 1001;
 
     // Need to control scores etc.
     private GamePreferences gamePreferences;
@@ -109,7 +116,7 @@ public class GameModel {
      */
     public GameModel(GamePreferences gamePreferences){
         stack = new ArrayList<>();
-        item = new int[3];
+        item = new int[PILES_IN_ITEM];
         animateDrop = false;
         animateCleanUp = false;
         alreadyCongratulated = false;
@@ -132,12 +139,17 @@ public class GameModel {
         if (scoreUpdatedListener != null)
             scoreUpdatedListener.onEvent();
 
+        // Actually this is an experimental things, looks like best gameability reached with
+        // width = 30dp and colors count = 5
         basicW = gamePreferences.getBasicWidth();
         colorsCount = gamePreferences.getColorsCount();
 
         createNewItem();
     }
 
+    /**
+     * Replaced Item colors with new set
+     */
     public void createNewItem(){
 
         Random r = new Random();
@@ -163,6 +175,10 @@ public class GameModel {
         item[2] = COLORS[index];
     }
 
+    /**
+     * Returns first index of item that could be collapsed. I.e. next pile has same color
+     * @return index in stack
+     */
     private int getIndexToRemove(){
         for (int i = 0; i < stack.size(); i++){
             if ((i > 0) && (stack.get(i).equals(stack.get(i - 1))))
@@ -171,25 +187,41 @@ public class GameModel {
         return -1;
     }
 
+    /**
+     * Performs collapse of the neighbor piles with equal colors, until no such piles
+     * would be present in the stack.
+     *
+     * Ex: Before (R - red, G- green, B - blue)
+     *
+     * RGGBRBGRBBRB -> RBRBGB
+     */
     public void cleanupStack(){
         removedIndex = getIndexToRemove();
+
+        // No more neighbor with same color
         if (removedIndex == UNDEFINED)
             return;
+
+        // Still need to continue
         while (removedIndex != UNDEFINED){
             animateCleanUp = true;
 
+            // Here we set animation of dropped item flag. So the next small time we only
+            // watch how pies are collapsed
             animation.setStartTime(System.currentTimeMillis());
             animation.setStartValue(2* basicW);
             animation.setFinishValue(0);
-            animation.setDuration(70);
+            animation.setDuration(ANIMATION_COLLAPSE_DURATION);
 
             waitAnimationFinish();
 
             animateCleanUp = false;
 
+            // 2 items removed in fact
             stack.remove(removedIndex);
             stack.remove(removedIndex - 1);
 
+            // and the score is updated
             score++;
             if (score > bestScore)
                 bestScore = score;
@@ -199,6 +231,9 @@ public class GameModel {
         }
     }
 
+    /**
+     * After active item was dropped (touch released), stack is recalculated
+     */
     public void addItemToStack() {
         if (fixedItem >= stack.size()) {
             stack.add(item[2]);
@@ -212,7 +247,36 @@ public class GameModel {
         cleanupStack();
     }
 
+    /**
+     * Performs action 'used drops the active item'
+     * @param x where active item was located when touch released
+     */
     public void drop(int x){
+
+        // Here we starts animation of dropping. So we can only see how the item falls to the right
+        showDropAnimation(x);
+
+        addItemToStack();
+
+        // Here we catch event "user loosed the game"
+        if ((stack.size() * basicW) >= (canvasWidth - item.length * basicW)){
+            if (gameOverListener != null){
+                gameOverListener.onEvent();
+            }
+        }
+
+        // and finally creating new item
+        createNewItem();
+        this.x = 0;
+    }
+
+    /**
+     * Shows animation of dropped item from position x to proper place on the screen
+     * If item dropped outside of stack than this position is a stack top
+     * Otherwise item places inside the stack
+     * @param x start position of drop
+     */
+    private void showDropAnimation(int x) {
         animateDrop = true;
 
         animation.setStartTime(System.currentTimeMillis());
@@ -230,25 +294,17 @@ public class GameModel {
             animation.setFinishValue(fixedItem * basicW - item.length * basicW);
         }
 
-        animation.setDuration((animation.getFinishValue() - animation.getStartValue()) / 2); // good speed
+        // Value 2 here sets fall velocity to more or less nice value
+        animation.setDuration((animation.getFinishValue() - animation.getStartValue()) / 2);
 
         waitAnimationFinish();
 
         animateDrop = false;
-
-        addItemToStack();
-
-        // Loose!
-        if ((stack.size() * basicW) >= (canvasWidth - item.length * basicW)){
-            if (gameOverListener != null){
-                gameOverListener.onEvent();
-            }
-        }
-
-        createNewItem();
-        this.x = 0;
     }
 
+    /**
+     * Does nothing until animation timer responds that animation done
+     */
     private void waitAnimationFinish() {
         long ticksAnimated;
         do
@@ -257,17 +313,26 @@ public class GameModel {
         while (ticksAnimated < animation.getDuration());
     }
 
+    /**
+     * Main method to paint current game state on the screen
+     * @param canvas where to paint game
+     */
     public void paint(Canvas canvas){
 
+        // This could be happened since drawing made in separate thread, so we can't handle it
+        // as exception
         if (canvas == null)
-            return; // could be happened since drawing made in separate thread
+            return;
 
+        // Clear all previous data
         canvas.drawColor(BACKGROUND_COLOR);
 
+        // Measuring canvas to improve performance
         canvasWidth = canvas.getWidth();
         canvasHeight = canvas.getHeight();
 
-
+        // It was easier to move stack cleanup animation to own method, since it has too
+        // different behaviour
         if (this.animateCleanUp){
             paintCleanUp(canvas);
         }
@@ -298,7 +363,6 @@ public class GameModel {
             }
 
             // drawing 'active' item
-
             if (this.animateDrop) {
                 float animationX = animation.getCurrentValue(System.currentTimeMillis() - animation.getStartTime());
                 for (int i = 0; i < item.length; i++){
@@ -325,11 +389,16 @@ public class GameModel {
             }
         }
 
-        paint.setColor(Color.BLACK);
-        int xLimiter = item.length * basicW;
-        canvas.drawLine(xLimiter, 0, xLimiter, canvasHeight, paint);
+        // Controversial point. It's hard to say unambiguously do we need to show a limiter line
+//        paint.setColor(Color.BLACK);
+//        int xLimiter = item.length * basicW;
+//        canvas.drawLine(xLimiter, 0, xLimiter, canvasHeight, paint);
     }
 
+    /**
+     * Paints game state in 'cleanup animation' mode
+     * @param canvas draw destination
+     */
     private void paintCleanUp(Canvas canvas) {
         int currentW;
         for (int i = 0; i < stack.size(); i++){

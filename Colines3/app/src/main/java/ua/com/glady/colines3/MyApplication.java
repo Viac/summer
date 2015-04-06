@@ -4,6 +4,9 @@ import android.app.Application;
 import android.util.Log;
 
 /**
+ * This class replaced native application since we have to handle uncaught exception in same
+ * way for all application
+ *
  * Created by Slava on 27.03.2015.
  */
 public class MyApplication extends Application {

@@ -1,24 +1,21 @@
 package ua.com.glady.colines3;
 
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
 import android.view.SurfaceHolder;
 
 /**
+ * Implements thread that performs drawing on canvas
+ *
  * Created by Slava on 27.03.2015.
  */
 class DrawThread extends Thread{
 
     private boolean runFlag = false;
-    private SurfaceHolder surfaceHolder;
+    private final SurfaceHolder surfaceHolder;
 
     private GameModel game;
 
-    public DrawThread(SurfaceHolder surfaceHolder, Resources resources, GameModel game){
+    public DrawThread(SurfaceHolder surfaceHolder, GameModel game){
         this.surfaceHolder = surfaceHolder;
         this.game = game;
     }
@@ -33,7 +30,7 @@ class DrawThread extends Thread{
         while (runFlag) {
             canvas = null;
             try {
-                // получаем объект Canvas и выполняем отрисовку
+                // Now we get canvas object and performs drawing
                 canvas = surfaceHolder.lockCanvas(null);
                 synchronized (surfaceHolder) {
                     game.paint(canvas);

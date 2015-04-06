@@ -5,12 +5,16 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 /**
+ * Implements object to draw game state
+ *
  * Created by Slava on 27.03.2015.
  */
 public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
+    // Drawing performs in separate thread
     private DrawThread drawThread;
 
+    // Source of data to draw
     private GameModel game;
 
     public GameSurfaceView(Context context, GameModel game) {
@@ -26,7 +30,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        drawThread = new DrawThread(getHolder(), getResources(), game);
+        drawThread = new DrawThread(getHolder(), game);
         drawThread.setRunning(true);
         drawThread.start();
     }
@@ -36,17 +40,13 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         boolean retry = true;
 
         // Finishing thread
-
-        // todo: check if this could drain battery
-
         drawThread.setRunning(false);
         while (retry) {
             try {
                 drawThread.join();
                 retry = false;
             } catch (InterruptedException e) {
-                // if not success - will try more and more..
-                //todo: does it make sense?
+                // if not success - will try again
             }
         }
     }
