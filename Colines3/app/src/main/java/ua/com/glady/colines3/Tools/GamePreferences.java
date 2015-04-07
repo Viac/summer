@@ -11,6 +11,11 @@ import android.content.SharedPreferences;
 public class GamePreferences {
 
 
+    private static final int DEFAULT_COLORS_COUNT = 5;
+    private static final int DEFAULT_BASIC_WIDTH = 30;
+    private static final int DEFAULT_STACK_SIZE = 21;
+
+
     // Stored game data
     private static final String BEST_SCORE_PREFERENCES_KEY = "GameBestScore";
 
@@ -21,6 +26,7 @@ public class GamePreferences {
     // Gameplay settings (might be unused, it's a test of gameplay)
     private static final String BASIC_WIDTH_PREFERENCES_KEY = "BasicWidth";
     private static final String COLORS_COUNT_PREFERENCES_KEY = "ColorsCount";
+    private static final String STACK_SIZE_PREFERENCES_KEY = "StackSize";
 
     public SharedPreferences getsPref() {
         return sPref;
@@ -64,12 +70,16 @@ public class GamePreferences {
 
     // This setting is not used in real production system, only for gameability test
     public int getColorsCount(){
-        return sPref.getInt(COLORS_COUNT_PREFERENCES_KEY, 5);
+        return sPref.getInt(COLORS_COUNT_PREFERENCES_KEY, DEFAULT_COLORS_COUNT);
     }
 
     // This setting is not used in real production system, only for gameability test
     public int getBasicWidth(){
-        return sPref.getInt(BASIC_WIDTH_PREFERENCES_KEY, 30);
+        return sPref.getInt(BASIC_WIDTH_PREFERENCES_KEY, DEFAULT_BASIC_WIDTH);
+    }
+
+    public int getStackSize(){
+        return sPref.getInt(STACK_SIZE_PREFERENCES_KEY, DEFAULT_STACK_SIZE);
     }
 
 }

@@ -36,11 +36,12 @@ public class GameplayPreferences {
         l.setOrientation(LinearLayout.VERTICAL);
 
         TextView tv1 = new TextView(mContext);
-        tv1.setText("Basic width");
+        tv1.setText("Basic width (obsolete)");
         l.addView(tv1);
 
         final EditText eWidth = new EditText(mContext);
-        eWidth.setText(String.valueOf(preferences.getsPref().getInt("BasicWidth", 30)));
+        eWidth.setText(String.valueOf(preferences.getBasicWidth()));
+        eWidth.setEnabled(false);
         l.addView(eWidth);
 
         TextView tv2 = new TextView(mContext);
@@ -48,8 +49,16 @@ public class GameplayPreferences {
         l.addView(tv2);
 
         final EditText eColorsCount = new EditText(mContext);
-        eColorsCount.setText(String.valueOf(preferences.getsPref().getInt("ColorsCount", 5)));
+        eColorsCount.setText(String.valueOf(preferences.getColorsCount()));
         l.addView(eColorsCount);
+
+        TextView tv3 = new TextView(mContext);
+        tv3.setText("Stack size");
+        l.addView(tv3);
+
+        final EditText edStackSize = new EditText(mContext);
+        edStackSize.setText(String.valueOf(preferences.getStackSize()));
+        l.addView(edStackSize);
 
         Button btOk = new Button(mContext);
         btOk.setText("OK");
@@ -59,6 +68,7 @@ public class GameplayPreferences {
                 SharedPreferences.Editor e = preferences.getsPref().edit();
                 e.putInt("BasicWidth", Integer.valueOf(eWidth.getText().toString()));
                 e.putInt("ColorsCount", Integer.valueOf(eColorsCount.getText().toString()));
+                e.putInt("StackSize", Integer.valueOf(edStackSize.getText().toString()));
                 e.commit();
                 d.dismiss();
                 Toast.makeText(mContext, "Restart game", Toast.LENGTH_SHORT).show();

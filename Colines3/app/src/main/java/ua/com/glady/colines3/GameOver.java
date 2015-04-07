@@ -60,7 +60,7 @@ public class GameOver {
         (view.findViewById(R.id.imShare)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FacebookShare.shareOnFacebook(mContext);
+                FacebookShare.shareOnFacebook(mContext, "https://play.google.com/store/apps/details?id=ua.com.glady.colines3");
                 gamePreferences.setAlreadyShared(true);
             }
         });

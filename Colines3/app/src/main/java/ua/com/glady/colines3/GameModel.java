@@ -67,6 +67,9 @@ public class GameModel {
     // this constant defines width of a single pile (which is a single column in "item")
     private int basicW;
 
+    // count of the piles in full loaded stack
+    private int stackSize;
+
     // this constant defines max colorsCount in game
     private int colorsCount;
 
@@ -124,6 +127,7 @@ public class GameModel {
         removedIndex = UNDEFINED;
         paint = new Paint();
         this.gamePreferences = gamePreferences;
+        stackSize = gamePreferences.getStackSize();
     }
 
     /**
@@ -139,9 +143,8 @@ public class GameModel {
         if (scoreUpdatedListener != null)
             scoreUpdatedListener.onEvent();
 
-        // Actually this is an experimental things, looks like best gameability reached with
-        // width = 30dp and colors count = 5
-        basicW = gamePreferences.getBasicWidth();
+        // Actually this fields made as variables to get ability to test gameplay in very different
+        // modes.
         colorsCount = gamePreferences.getColorsCount();
 
         createNewItem();
@@ -259,7 +262,7 @@ public class GameModel {
         addItemToStack();
 
         // Here we catch event "user loosed the game"
-        if ((stack.size() * basicW) >= (canvasWidth - item.length * basicW)){
+        if (stack.size() >= stackSize){
             if (gameOverListener != null){
                 gameOverListener.onEvent();
             }
@@ -331,6 +334,8 @@ public class GameModel {
         canvasWidth = canvas.getWidth();
         canvasHeight = canvas.getHeight();
 
+        basicW = canvasWidth / stackSize;
+
         // It was easier to move stack cleanup animation to own method, since it has too
         // different behaviour
         if (this.animateCleanUp){
@@ -388,7 +393,6 @@ public class GameModel {
                 }
             }
         }
-
     }
 
     /**

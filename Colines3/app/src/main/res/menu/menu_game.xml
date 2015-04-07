@@ -2,9 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".GameActivity">
     <item android:id="@+id/action_info"
-        android:title=""
+        android:title="Info"
         android:icon="@android:drawable/ic_menu_info_details"
         android:orderInCategory="101"
+        android:visible="false"
         app:showAsAction="never" />
     <item android:id="@+id/action_reset"
         android:title="@string/Restart"
@@ -12,8 +13,9 @@
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />
     <item android:id="@+id/action_settings"
-        android:title="@string/Restart"
+        android:title="@string/Settings"
         android:icon="@android:drawable/ic_menu_manage"
         android:orderInCategory="100"
+        android:visible="false"
         app:showAsAction="never" />
 </menu>
