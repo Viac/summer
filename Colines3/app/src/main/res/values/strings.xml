@@ -23,4 +23,12 @@
     <string name="WinText">You got it!</string>
     <string name="Score">Score</string>
 
+
+    <string name="title_activity_exception_handle">ExceptionHandleActivity</string>
+    <string name="ApplicationError">Sorry, application error occurred</string>
+    <string name="ApplicationErrorExplanation">A technical error appeared during application run. Try to restart application. \n\nWe would be very grateful for you if you let us know about this problem so we can fix it.</string>
+    <string name="ApplicationErrorSendInfo">send bug report</string>
+    <string name="CloseApplication">Close application</string>
+    <string name="title_activity_send_exception">SendExceptionActivity</string>
+
 </resources>
