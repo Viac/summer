@@ -6,7 +6,7 @@
     <string name="Restart">Restart</string>
     <string name="Continue">Continue</string>
     <string name="Info">Info</string>
-    <string name="BestScore">Collapse 1001 to win\nBest: %1$d</string>
+    <string name="BestScore">Collapse 1001 lines to win\nBest: %1$d</string>
     <string name="Share">Share on Facebook</string>
     <string name="Rate">Rate</string>
     <string name="NewRecord">New record</string>
@@ -20,8 +20,8 @@
     <string name="No">No</string>
 
     <string name="GameOver">Game over</string>
-    <string name="WinCaption">Winner!</string>
-    <string name="WinText">You got it!</string>
+    <string name="WinCaption">You won the game!</string>
+    <string name="WinText">You did it!</string>
     <string name="Score">Score</string>
 
 

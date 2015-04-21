@@ -15,7 +15,7 @@ import android.widget.CheckBox;
  */
 public class SendExceptionActivity extends ActionBarActivity implements View.OnClickListener {
 
-    private static final String BUGREPORT_COLLECTING_EMAIL = "uacc.project@ukr.net";
+    private static final String BUGREPORT_COLLECTING_EMAIL = "1001lines@viac-soft.in.ua";
 
     private String exceptionReport;
 
@@ -35,7 +35,7 @@ public class SendExceptionActivity extends ActionBarActivity implements View.OnC
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("plain/text");
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{BUGREPORT_COLLECTING_EMAIL});
-        intent.putExtra(Intent.EXTRA_SUBJECT, "UACC exception");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "1001 lines exception");
         intent.putExtra(Intent.EXTRA_TEXT, exceptionReport); // do this so some email clients don't complain about empty body.
         startActivity(intent);
     }

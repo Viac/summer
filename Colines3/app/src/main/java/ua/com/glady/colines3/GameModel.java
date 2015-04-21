@@ -370,18 +370,26 @@ public class GameModel {
             // drawing 'active' item
             if (this.animateDrop) {
                 float animationX = animation.getCurrentValue(System.currentTimeMillis() - animation.getStartTime());
+
+
                 for (int i = 0; i < item.length; i++){
                     paint.setColor(item[i]);
                     canvas.drawRect(animationX + i * basicW, 0, animationX + (i + 1) * basicW, canvasHeight, paint);
                 }
+
+                paint.setColor(Color.argb(255, 238, 238, 238));
+                canvas.drawRect(animationX, 0, animationX + 3 * basicW, 20, paint);
             }
             else {
                 // normal drawing
+
                 for (int i = 0; i < item.length; i++){
                     paint.setColor(item[i]);
                     canvas.drawRect(xPaint + i * basicW, 0, xPaint + (i + 1) * basicW, canvasHeight, paint);
                 }
 
+                paint.setColor(Color.argb(255, 238, 238, 238));
+                canvas.drawRect(xPaint, 0, xPaint + 3 * basicW, 20, paint);
             }
 
             // drawing items that on the left of our current position
